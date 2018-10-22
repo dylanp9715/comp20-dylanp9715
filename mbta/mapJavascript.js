@@ -135,19 +135,25 @@ function drawMap(stations) {
 		});
 
 		var curr_stop_id = stations[i].stop_id;
-		google.maps.event.addListener(stationMarker, 'click', (function (curr_stop_id) {
+		google.maps.event.addListener(stationMarker, 'click', (function(curr_stop_id) {
 			return function() {
+				var url = "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + curr_stop_id;
+
 				request = new XMLHttpRequest();
-				console.log(curr_stop_id);
-				request.open("GET", 
-				"https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + curr_stop_id, true);
-		
+				request.open("GET", url, true);
+				console.log(url);
+
+				console.log(request.readyState);
+
 				request.onreadystatechange = function() {
 					if (request.readyState == 4 && request.status == 200) {
+						console.log("HERE");
 						theData = request.responseText;
 						stationInfo = JSON.parse(theData);
+						console.log(stationInfo);
 						returnHTML = "<ul>";
 						for (var i = 0; i < stationInfo.length; i++) {
+							console.log(i);
 							returnHTML += stationInfo["arrival_time"];
 						}
 						returnHTML += "</ul";
@@ -155,8 +161,8 @@ function drawMap(stations) {
 						infoWindow.setContent(returnHTML);
 						infoWindow.open(map, stationMarker);
 					}
-					request.send();
 				}
+				request.send();
 			}
 		})(curr_stop_id));
 	}
@@ -190,25 +196,3 @@ function drawMap(stations) {
 	stationMarker.setMap(map);
 }
 
-// function getJSON(curr_stop_id) {
-// 	request = new XMLHttpRequest();
-// 	console.log(curr_stop_id);
-// 	request.open("GET", 
-// 	"https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + curr_stop_id, true);
-		
-// 	request.onreadystatechange = function() {
-// 		if (request.readyState == 4 && request.status == 200) {
-// 			theData = request.responseText;
-// 			stationInfo = JSON.parse(theData);
-// 			returnHTML = "<ul>";
-// 			for (var i = 0; i < stationInfo.length; i++) {
-// 				returnHTML += stationInfo["arrival_time"];
-// 			}
-// 			returnHTML += "</ul";
-					
-// 			infoWindow.setContent(returnHTML);
-// 			infoWindow.open(map, stationMarker);
-// 		}
-// 		request.send();
-// 	}
-// }
