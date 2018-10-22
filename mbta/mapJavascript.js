@@ -143,18 +143,13 @@ function drawMap(stations) {
 				request.open("GET", url, true);
 				console.log(url);
 
-				console.log(request.readyState);
-
 				request.onreadystatechange = function() {
 					if (request.readyState == 4 && request.status == 200) {
-						console.log("HERE");
 						theData = request.responseText;
 						stationInfo = JSON.parse(theData);
-						console.log(stationInfo);
-						returnHTML = "<ul>";
-						for (var i = 0; i < stationInfo.length; i++) {
-							console.log(i);
-							returnHTML += stationInfo["arrival_time"];
+						arrival_time = "<ul>";
+						for (var i = 0; i < stationInfo["data"].length; i++) {
+							returnHTML += stationInfo["data"][i]["arrival_time"];
 						}
 						returnHTML += "</ul";
 					
