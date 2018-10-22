@@ -120,54 +120,11 @@ function initMap() {
 function drawMap(stations) {
 	// Holds lat and lng coordinates of each station for the polyline
 	var coordArr = new Array();
-
-	var infoWindow = new google.maps.InfoWindow();
-	var stationMarker, i;
 	
-
 	// Fill coordArr with coordinates to draw polyline and create markers for each station
-	for (i = 0; i < stations.length; i++) {
+	for (var i = 0; i < stations.length; i++) {
 		coordArr.push(stations[i].position);
-		stationMarker = new google.maps.Marker({
-			position: stations[i].position,
-			icon: 'tsymbol.png',
-			map: map
-		});
-
-		var curr_stop_id = stations[i].stop_id;
-		var stationName = stations[i].name;
-
-		google.maps.event.addListener(stationMarker, 'click', (function(curr_stop_id, stationName) {
-			return function() {
-				var url = "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + curr_stop_id;
-
-				request = new XMLHttpRequest();
-				request.open("GET", url, true);
-				console.log(url);
-
-				request.onreadystatechange = function() {
-					if (request.readyState == 4 && request.status == 200) {
-						theData = request.responseText;
-						stationInfo = JSON.parse(theData);
-						returnHTML = "This stop is: ";
-						for (var i = 0; i < stationInfo["data"].length; i++) {
-							currStationName = stationName;
-							arrivalTime = stationInfo["data"][i]["attributes"]["arrival_time"];
-							if (stationInfo["data"][i]["attributes"]["direction_id"] == 0) {
-								direction = "Southbound";
-							} else {
-								direction = "Northbound";
-							}
-						}
-						returnHTML = returnHTML + currStationName + "Here is the upcoming schedule:" + "<br/>" + "Time of Arrival" + arrivalTime + "Direction" + direction;
-					
-						infoWindow.setContent(returnHTML);
-						infoWindow.open(map, stationMarker);
-					}
-				}
-				request.send();
-			}
-		})(curr_stop_id));
+		createMarker(stations, i);
 	}
 
 	// Create the polyline object using position of each station
@@ -176,7 +133,6 @@ function drawMap(stations) {
 		strokeColor: '#FF0000'
 	});
 
-	
 	// Find user's current location and place on map
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(function(position) {
@@ -196,6 +152,51 @@ function drawMap(stations) {
 
 	// Set map with red polyline and markers for both user and station locations
 	redLinePath.setMap(map);
-	stationMarker.setMap(map);
 }
 
+function createMarker(stations, i) {
+	var stationMarker = new google.maps.Marker({
+		position: stations[i].position,
+		icon: 'tsymbol.png',
+		map: map
+	});
+
+	var curr_stop_id = stations[i].stop_id;
+	var stationName = stations[i].name;
+
+	google.maps.event.addListener(stationMarker, 'click', (function(curr_stop_id, stationName) {
+		return function() {
+			var url = "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + curr_stop_id;
+
+			request = new XMLHttpRequest();
+			request.open("GET", url, true);
+			console.log(url);
+
+			request.onreadystatechange = function(stationName) {
+				if (request.readyState == 4 && request.status == 200) {
+					theData = request.responseText;
+					stationInfo = JSON.parse(theData);
+					returnHTML = "This stop is: ";
+					for (var i = 0; i < stationInfo["data"].length; i++) {
+						arrivalTime = stationInfo["data"][i]["attributes"]["arrival_time"];
+						if (stationInfo["data"][i]["attributes"]["direction_id"] == 0) {
+							direction = "Southbound";
+						} else {
+							direction = "Northbound";
+						}
+					}
+					returnHTML = returnHTML + stationName + "Here is the upcoming schedule:" + "<br/>" + "Time of Arrival" + arrivalTime + "Direction" + direction;
+					
+					var infoWindow = new google.maps.InfoWindow({
+						content: returnHTML
+					});
+
+					infoWindow.open(map, stationMarker);
+				}
+			}
+			request.send();
+		}
+	})(curr_stop_id, stationName));
+
+	//stationMarker.setMap(map);
+}
