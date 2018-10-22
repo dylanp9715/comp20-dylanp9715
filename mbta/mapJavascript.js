@@ -149,11 +149,11 @@ function drawMap(stations) {
 						stationInfo = JSON.parse(theData);
 						arrival_time = "<ul>";
 						for (var i = 0; i < stationInfo["data"].length; i++) {
-							returnHTML += stationInfo["data"][i]["arrival_time"];
+							arrival_time += stationInfo["data"][i]["arrival_time"];
 						}
-						returnHTML += "</ul";
+						arrival_time += "</ul";
 					
-						infoWindow.setContent(returnHTML);
+						infoWindow.setContent(arrival_time);
 						infoWindow.open(map, stationMarker);
 					}
 				}
