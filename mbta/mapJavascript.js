@@ -171,32 +171,34 @@ function createMarker(stations, i) {
 			request = new XMLHttpRequest();
 			request.open("GET", url, true);
 			console.log(url);
+			console.log(stationName);
 
-			request.onreadystatechange = function(stationName) {
-				if (request.readyState == 4 && request.status == 200) {
-					theData = request.responseText;
-					stationInfo = JSON.parse(theData);
-					returnHTML = "This stop is: ";
-					for (var i = 0; i < stationInfo["data"].length; i++) {
-						arrivalTime = stationInfo["data"][i]["attributes"]["arrival_time"];
-						if (stationInfo["data"][i]["attributes"]["direction_id"] == 0) {
-							direction = "Southbound";
-						} else {
-							direction = "Northbound";
+			request.onreadystatechange = (function(stationName) {
+				return function() {
+					if (request.readyState == 4 && request.status == 200) {
+						theData = request.responseText;
+						stationInfo = JSON.parse(theData);
+						returnHTML = "This stop is: ";
+						for (var i = 0; i < stationInfo["data"].length; i++) {
+							arrivalTime = stationInfo["data"][i]["attributes"]["arrival_time"];
+							if (stationInfo["data"][i]["attributes"]["direction_id"] == 0) {
+								direction = "Southbound";
+							} else {
+								direction = "Northbound";
+							}
 						}
-					}
-					returnHTML = returnHTML + stationName + "Here is the upcoming schedule:" + "<br/>" + "Time of Arrival" + arrivalTime + "Direction" + direction;
+						returnHTML = returnHTML + stationName + "Here is the upcoming schedule:" + "<br/>" + "Time of Arrival" + arrivalTime + "Direction" + direction;
 					
-					var infoWindow = new google.maps.InfoWindow({
-						content: returnHTML
-					});
+						var infoWindow = new google.maps.InfoWindow({
+							content: returnHTML
+						});
 
-					infoWindow.open(map, stationMarker);
+						infoWindow.open(map, stationMarker);
+					}
 				}
-			}
+			})(stationName);
+			
 			request.send();
 		}
 	})(curr_stop_id, stationName));
-
-	//stationMarker.setMap(map);
 }
