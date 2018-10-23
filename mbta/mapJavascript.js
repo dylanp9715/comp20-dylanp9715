@@ -9,6 +9,9 @@ function initMap() {
         zoom:14
     });
 
+    // Initialize infoWindow so only one appears when clicking on marker
+    infoWindow = new google.maps.InfoWindow();
+
     // Create an array of stations that contain its name, position, and stop id
     stations = [
         {name: 'Alewife', position: new google.maps.LatLng(42.395428, -71.142483), stop_id: 'place-alfcl'},
@@ -128,9 +131,7 @@ function createMarker(i) {
                         + "<p class='left'>" + "<u>Time of Arrival</u>" + "<br/>" + arrivalTime + "</p>"
                         + "<p class='right'>" + "<u>Direction</u>" + "<br/>" + direction + "</p>";
                     
-                        var infoWindow = new google.maps.InfoWindow({
-                            content: returnHTML
-                        });
+                        infoWindow.setContent(returnHTML);
                         infoWindow.open(map, stationMarker);
                     }
                 }
@@ -188,10 +189,7 @@ function getMyLocation() {
             infoWindowData = "You are closest to " + closestStation.name + " and it is " + smallestDistance + " miles away";
 
             google.maps.event.addListener(userMarker, 'click', function() {
-                var infoWindow = new google.maps.InfoWindow({
-                    content: infoWindowData
-                });
-
+                infoWindow.setContent(infoWindowData);
                 infoWindow.open(map, userMarker);   
             });
 
