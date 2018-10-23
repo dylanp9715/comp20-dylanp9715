@@ -175,19 +175,26 @@ function createMarker(stations, i) {
 
 			request.onreadystatechange = (function(stationName) {
 				return function() {
+
+					var arrivalTime = " ";
+					var direction = " ";
+
 					if (request.readyState == 4 && request.status == 200) {
 						theData = request.responseText;
 						stationInfo = JSON.parse(theData);
 						returnHTML = "This stop is: ";
 						for (var i = 0; i < stationInfo["data"].length; i++) {
-							arrivalTime = stationInfo["data"][i]["attributes"]["arrival_time"];
+							arrivalTime += stationInfo["data"][i]["attributes"]["arrival_time"].slice(11,16) + "<br/>";
 							if (stationInfo["data"][i]["attributes"]["direction_id"] == 0) {
-								direction = "Southbound";
+								direction += "Southbound" + "<br/>";
 							} else {
-								direction = "Northbound";
+								direction += "Northbound" + "<br/>";
 							}
 						}
-						returnHTML = returnHTML + stationName + "Here is the upcoming schedule:" + "<br/>" + "Time of Arrival" + arrivalTime + "Direction" + direction;
+						returnHTML = returnHTML + stationName 
+						+ "<p>Here is the upcoming schedule: </p>" 
+						+ "<p class='left'>" + "<u>Time of Arrival</u>" + "<br/>" + arrivalTime + "</p>"
+						+ "<p class='right'>" + "<u>Direction</u>" + "<br/>" + direction + "</p>";
 					
 						var infoWindow = new google.maps.InfoWindow({
 							content: returnHTML
