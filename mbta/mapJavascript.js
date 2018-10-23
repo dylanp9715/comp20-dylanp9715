@@ -115,24 +115,25 @@ function createMarker(i) {
                         stationInfo = JSON.parse(theData);
                         returnHTML = "This stop is: ";
                         
-                        // Go through JSON object and extract arrival times and direction to place inside infowindow
-                        for (var i = 0; i < stationInfo["data"].length; i++) {
-                            if (stationInfo["data"][i]["attributes"]["arrival_time"] != null) {
-                                arrivalTime += stationInfo["data"][i]["attributes"]["arrival_time"].slice(11,16) + "<br/>";
+                        // If there is data for this station...
+                        if (stationInfo["data"].length != 0) {
+                            // Go through JSON object and extract arrival times and direction to place inside infowindow
+                            for (var i = 0; i < stationInfo["data"].length; i++) {
+                                if (stationInfo["data"][i]["attributes"]["arrival_time"] != null) {
+                                    arrivalTime += stationInfo["data"][i]["attributes"]["arrival_time"].slice(11,16) + "<br/>";
 
-                                if (stationInfo["data"][i]["attributes"]["direction_id"] == 0) {
-                                    direction += "Southbound" + "<br/>";
-                                } else {
-                                    direction += "Northbound" + "<br/>";
+                                    if (stationInfo["data"][i]["attributes"]["direction_id"] == 0) {
+                                        direction += "Southbound" + "<br/>";
+                                    } else {
+                                        direction += "Northbound" + "<br/>";
+                                    }
                                 }
                             }
-                        }
 
-                        returnHTML = returnHTML + stationName 
-                        + "<p>Here is the upcoming schedule: </p>" 
-                        + "<p class='left'>" + "<u>Time of Arrival</u>" + "<br/>" + arrivalTime + "</p>"
-                        + "<p class='right'>" + "<u>Direction</u>" + "<br/>" + direction + "</p>";
-                    
+                            returnHTML = returnHTML + stationName + "<p>Here is the upcoming schedule: </p>" + "<p class='left'>" + "<u>Time of Arrival</u>" + "<br/>" + arrivalTime + "</p>"+ "<p class='right'>" + "<u>Direction</u>" + "<br/>" + direction + "</p>";
+                        } else {
+                            returnHTML = "Arrival times for this station are currently unavailable.";
+                        }
                         infoWindow.setContent(returnHTML);
                         infoWindow.open(map, stationMarker);
                     }
