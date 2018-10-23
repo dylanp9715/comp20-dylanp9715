@@ -228,14 +228,17 @@ function getMyLocation() {
 	if (navigator.geolocation) {
 		console.log("here");
 		navigator.geolocation.getCurrentPosition(function(position) {
+			
+			// Find user's current location
 			var currentLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 			
-			// Place marker at my current location
+			// Place marker at user's current location
 			var userMarker = new google.maps.Marker({
 				position: currentLocation,
 				map: map
 			});
 
+			// Find which station is closest to user by calculating the shortest distance between user and each station
 			var smallestDistance = google.maps.geometry.spherical.computeDistanceBetween(currentLocation, stations[0].position) * 0.000621371192;
 
 			for (var i = 0; i < stations.length; i++) {
@@ -245,6 +248,7 @@ function getMyLocation() {
 				}
 			}
 
+			// Create arrays to hold user's current position and closest station's position to draw polyline
 			var closestStationArray = new Array();
 			closestStationArray.push(currentLocation);
 			closestStationArray.push(closestStation.position);
