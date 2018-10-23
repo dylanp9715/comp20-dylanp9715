@@ -260,7 +260,7 @@ function getMyLocation() {
 
 			var meToStation = new google.maps.Polyline({
 				path: closestStationArray,
-				strokeColor: '#00FFFF'
+				strokeColor: '#000080'
 			});
 
 			infoWindowData = "You are closest to " + closestStation.name + " and it is " + smallestDistance + " miles away";
