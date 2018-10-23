@@ -238,6 +238,9 @@ function getMyLocation() {
 				map: map
 			});
 
+			// Center current location when found
+			map.panTo(currentLocation);
+
 			// Find which station is closest to user by calculating the shortest distance between user and each station
 			var smallestDistance = google.maps.geometry.spherical.computeDistanceBetween(currentLocation, stations[0].position) * 0.000621371192;
 
@@ -255,7 +258,7 @@ function getMyLocation() {
 
 			var meToStation = new google.maps.Polyline({
 				path: closestStationArray,
-				strokeColor: '#00FFFF'
+				strokeColor: '#000080'
 			});
 
 			infoWindowData = "You are closest to " + closestStation.name + " and it is " + smallestDistance + " miles away";
