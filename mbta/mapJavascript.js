@@ -152,26 +152,11 @@ function drawMap(stations) {
 		strokeColor: '#FF0000'
 	});
 
-	// Find user's current location and place on map
-	if (navigator.geolocation) {
-		navigator.geolocation.getCurrentPosition(function(position) {
-			
-			var currentLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-			
-			var userMarker = new google.maps.Marker({
-				position: currentLocation,
-				map: map
-
-			});
-
-		});
-	} else {
-		alert("Error: The geolocation service failed");
-	}
-
 	// Set map with red polyline and markers for both user and station locations
 	braintreePath.setMap(map);
 	ashmontPath.setMap(map);
+
+	getMyLocation(stations);
 }
 
 function createMarker(stations, i) {
@@ -239,4 +224,50 @@ function createMarker(stations, i) {
 			request.send();
 		}
 	})(curr_stop_id, stationName));
+}
+
+function getMyLocation(stations) {
+	// Find user's current location and place on map
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(function(position) {
+			
+			var currentLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+			
+			// Place marker at my current location
+			var userMarker = new google.maps.Marker({
+				position: currentLocation,
+				map: map
+			});
+
+			var smallestDistance = google.maps.geometry.spherical.computeDistanceBetween(currentLocation, stations[0].position) * 0.000621371192;
+
+			for (var i = 0; i < stations.length; i++) {
+				if (google.maps.geometry.spherical.computeDistanceBetween(currentLocation, stations[i].position) * 0.000621371192 < smallestDistance) {
+					smallestDistance = google.maps.geometry.spherical.computeDistanceBetween(currentLocation, stations[i].position) * 0.000621371192;
+					closestStation = stations[i];
+				}
+			}
+
+			var closestStationArray = new Array();
+			closestStationArray.push(currentLocation);
+			closestStationArray.push(closestStation.position);
+
+			var meToStation = new google.maps.Polyline({
+				path: closestStationArray,
+				strokeColor: '#00FFFF'
+			});
+
+			infoWindowData = "You are closest to " + closestStation.name + " and it is " + smallestDistance + " miles away";
+
+			google.maps.event.addListener(userMarker, 'click', function() {
+				var infoWindow = new google.maps.InfoWindow({
+					content: infoWindowData
+				});
+
+				infoWindow.open(map, userMarker);	
+			});
+		});
+	} else {
+		alert("Error: The geolocation service failed");
+	}
 }
