@@ -9,7 +9,7 @@ function initMap() {
 	});
 
 	// Create an array of stations that contain its name, position, and stop id
-	var stations = [
+	stations = [
 		{
 			name: 'Alewife',
 			position: new google.maps.LatLng(42.395428, -71.142483),
@@ -117,10 +117,10 @@ function initMap() {
 		},
 	];
 
-	drawMap(stations);
+	drawMap();
 }
 
-function drawMap(stations) {
+function drawMap() {
 	
 	// Holds lat and lng coordinates of each station for the polyline
 	var braintreeArray = new Array();
@@ -129,7 +129,7 @@ function drawMap(stations) {
 	// Fill braintreeArray with coordinates to draw polyline for Braintree path and create markers for each station
 	for (var i = 0; i < stations.length - 5; i++) {
 		braintreeArray.push(stations[i].position);
-		createMarker(stations, i);
+		createMarker(i);
 	}
 
 	// Necessary to connect JFK/UMass station to the Ashmont path
@@ -138,7 +138,7 @@ function drawMap(stations) {
 	// Fill ashmontArray with coordinates to draw polyline for Ashmont path and create markers for each station
 	for (var j = stations.length - 4; j < stations.length; j++) {
 		ashmontArray.push(stations[j].position);
-		createMarker(stations, j);
+		createMarker(j);
 	}
 
 	// Create the polyline object using position of each station for the braintree and ashmont paths
@@ -159,7 +159,7 @@ function drawMap(stations) {
 	getMyLocation(stations);
 }
 
-function createMarker(stations, i) {
+function createMarker(i) {
 	
 	// Create a marker for the current station with a custom icon
 	var stationMarker = new google.maps.Marker({
@@ -169,12 +169,11 @@ function createMarker(stations, i) {
 	});
 
 	// Extract stop id and name of station to be used when inputting url for JSON retrieval and the infowindow respectively
-	var curr_stop_id = stations[i].stop_id;
-	var stationName = stations[i].name;
+	curr_stop_id = stations[i].stop_id;
+	stationName = stations[i].name;
 
 	// Anytime the station marker is clicked...
-	google.maps.event.addListener(stationMarker, 'click', (function(curr_stop_id, stationName) {
-		return function() {
+	google.maps.event.addListener(stationMarker, 'click', function() {
 
 			// Make instance of XHR object to make HTTP request after page is loaded
 			request = new XMLHttpRequest();
@@ -183,8 +182,7 @@ function createMarker(stations, i) {
 			request.open("GET", "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + curr_stop_id, true);
 
 			// Set up callback for when HTTP response is returned
-			request.onreadystatechange = (function(stationName) {
-				return function() {
+			request.onreadystatechange = function() {
 
 					// Create empty strings for infowindow data
 					var arrivalTime = " ";
@@ -217,20 +215,19 @@ function createMarker(stations, i) {
 
 						infoWindow.open(map, stationMarker);
 					}
-				}
-			})(stationName);
+			};
 			
 			// Send the request
 			request.send();
-		}
-	})(curr_stop_id, stationName));
+	});
 }
 
-function getMyLocation(stations) {
+function getMyLocation() {
 	// Find user's current location and place on map
+	console.log("here");
 	if (navigator.geolocation) {
+		console.log("here");
 		navigator.geolocation.getCurrentPosition(function(position) {
-			
 			var currentLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 			
 			// Place marker at my current location
@@ -266,6 +263,8 @@ function getMyLocation(stations) {
 
 				infoWindow.open(map, userMarker);	
 			});
+
+			meToStation.setMap(map);
 		});
 	} else {
 		alert("Error: The geolocation service failed");
