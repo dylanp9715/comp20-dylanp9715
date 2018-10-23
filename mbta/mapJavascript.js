@@ -47,7 +47,7 @@ function drawMap() {
     var ashmontArray = new Array();
     
     // Fill braintreeArray and ashmontArray with coordinates to draw polyline and create markers for each station
-    for (var i = 0; i < stations.length - 5; i++) {
+    for (var i = 0; i < stations.length - 4; i++) {
         braintreeArray.push(stations[i].position);
         createMarker(i);
     }
