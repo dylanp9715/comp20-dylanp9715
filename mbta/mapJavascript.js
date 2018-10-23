@@ -169,11 +169,12 @@ function createMarker(i) {
 	});
 
 	// Extract stop id and name of station to be used when inputting url for JSON retrieval and the infowindow respectively
-	curr_stop_id = stations[i].stop_id;
-	stationName = stations[i].name;
+	var curr_stop_id = stations[i].stop_id;
+	var stationName = stations[i].name;
 
 	// Anytime the station marker is clicked...
-	google.maps.event.addListener(stationMarker, 'click', function() {
+	google.maps.event.addListener(stationMarker, 'click', (function(curr_stop_id, stationName) {
+		return function() {
 
 			// Make instance of XHR object to make HTTP request after page is loaded
 			request = new XMLHttpRequest();
@@ -182,7 +183,8 @@ function createMarker(i) {
 			request.open("GET", "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + curr_stop_id, true);
 
 			// Set up callback for when HTTP response is returned
-			request.onreadystatechange = function() {
+			request.onreadystatechange = (function(stationName) {
+				return function() {
 
 					// Create empty strings for infowindow data
 					var arrivalTime = " ";
@@ -215,20 +217,20 @@ function createMarker(i) {
 
 						infoWindow.open(map, stationMarker);
 					}
-			};
+				}
+			})(stationName);
 			
 			// Send the request
 			request.send();
-	});
+		}
+	})(curr_stop_id, stationName));
 }
 
 function getMyLocation() {
 	// Find user's current location and place on map
-	console.log("here");
 	if (navigator.geolocation) {
-		console.log("here");
 		navigator.geolocation.getCurrentPosition(function(position) {
-			
+
 			// Find user's current location
 			var currentLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 			
@@ -258,7 +260,7 @@ function getMyLocation() {
 
 			var meToStation = new google.maps.Polyline({
 				path: closestStationArray,
-				strokeColor: '#000080'
+				strokeColor: '#00FFFF'
 			});
 
 			infoWindowData = "You are closest to " + closestStation.name + " and it is " + smallestDistance + " miles away";
