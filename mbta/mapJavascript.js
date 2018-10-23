@@ -119,17 +119,32 @@ function initMap() {
 
 function drawMap(stations) {
 	// Holds lat and lng coordinates of each station for the polyline
-	var coordArr = new Array();
+	var braintreeArray = new Array();
+	var ashmontArray = new Array();
 	
-	// Fill coordArr with coordinates to draw polyline and create markers for each station
-	for (var i = 0; i < stations.length; i++) {
-		coordArr.push(stations[i].position);
+	// Fill braintreeArray with coordinates to draw polyline for Braintree path and create markers for each station
+	for (var i = 0; i < stations.length - 5; i++) {
+		braintreeArray.push(stations[i].position);
 		createMarker(stations, i);
 	}
 
-	// Create the polyline object using position of each station
-	var redLinePath = new google.maps.Polyline({
-		path: coordArr,
+	// Necessary to connect JFK/UMass station to the Ashmont path
+	ashmontArray.push(stations[11].position);
+
+	// Fill ashmontArray with coordinates to draw polyline for Ashmont path and create markers for each station
+	for (var j = stations.length - 4; j < stations.length; j++) {
+		ashmontArray.push(stations[j].position);
+		createMarker(stations, j);
+	}
+
+	// Create the polyline object using position of each station for the braintree and ashmont paths
+	var braintreePath = new google.maps.Polyline({
+		path: braintreeArray,
+		strokeColor: '#FF0000'
+	});
+
+	var ashmontPath = new google.maps.Polyline({
+		path: ashmontArray,
 		strokeColor: '#FF0000'
 	});
 
@@ -151,7 +166,8 @@ function drawMap(stations) {
 	}
 
 	// Set map with red polyline and markers for both user and station locations
-	redLinePath.setMap(map);
+	braintreePath.setMap(map);
+	ashmontPath.setMap(map);
 }
 
 function createMarker(stations, i) {
