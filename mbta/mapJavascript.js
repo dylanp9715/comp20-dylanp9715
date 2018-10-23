@@ -1,7 +1,7 @@
 var map;
 
 function initMap() {
-	
+
 	// Create the map and center it on South Station
 	map = new google.maps.Map(document.getElementById('map'), {
 		center: {lat: 42.352271, lng: -71.05524200000001},
@@ -10,113 +10,28 @@ function initMap() {
 
 	// Create an array of stations that contain its name, position, and stop id
 	stations = [
-		{
-			name: 'Alewife',
-			position: new google.maps.LatLng(42.395428, -71.142483),
-			stop_id: 'place-alfcl'
-		},
-		{
-			name: 'Davis Square',
-			position: new google.maps.LatLng(42.39674, -71.121815),
-			stop_id: 'place-davis'
-		},
-		{
-			name: 'Porter Square',
-			position: new google.maps.LatLng(42.3884, -71.11914899999999),
-			stop_id: 'place-portr'
-		},
-		{
-			name: 'Harvard Square',
-			position: new google.maps.LatLng(42.373362, -71.118956),
-			stop_id: 'place-harsq'
-		},
-		{
-			name: 'Central Square',
-			position: new google.maps.LatLng(42.365486, -71.103802),
-			stop_id: 'place-cntsq'
-		},
-		{
-			name: 'Kendall/MIT',
-			position: new google.maps.LatLng(42.36249079, -71.08617653),
-			stop_id: 'place-knncl'
-		},
-		{
-			name: 'Charles/MGH',
-			position: new google.maps.LatLng(42.361166, -71.070628),
-			stop_id: 'place-chmnl'
-		},
-		{
-			name: 'Park Street',
-			position: new google.maps.LatLng(42.35639457, -71.0624242),
-			stop_id: 'place-pktrm'
-		},
-		{
-			name: 'Downtown Crossing',
-			position: new google.maps.LatLng(42.355518, -71.060225),
-			stop_id: 'place-dwnxg'
-		},
-		{
-			name: 'Broadway',
-			position: new google.maps.LatLng(42.342622, -71.056967),
-			stop_id: 'place-brdwy'
-		},
-		{
-			name: 'Andrew',
-			position: new google.maps.LatLng(42.330154, -71.057655),
-			stop_id: 'place-andrw'
-		},
-		{
-			name: 'JFK/UMass',
-			position: new google.maps.LatLng(42.320685, -71.052391),
-			stop_id: 'place-jfk'
-		},
-		{
-			name: 'North Quincy',
-			position: new google.maps.LatLng(42.275275, -71.029583),
-			stop_id: 'place-nqncy'
-		},
-		{
-			name: 'Wollaston',
-			position: new google.maps.LatLng(42.2665139, -71.0203369),
-			stop_id: 'place-wlsta'
-		},
-		{
-			name: 'Quincy Center',
-			position: new google.maps.LatLng(42.251809, -71.005409),
-			stop_id: 'place-qnctr'
-		},
-		{
-			name: 'Quincy Adams',
-			position: new google.maps.LatLng(42.233391, -71.007153),
-			stop_id: 'place-qamnl'
-		},
-		{
-			name: 'Braintree',
-			position: new google.maps.LatLng(42.2078543, -71.0011385),
-			stop_id: 'place-brntn'
-		},
-		{
-			name: 'Savin Hill',
-			position: new google.maps.LatLng(42.31129, -71.053331),
-			stop_id: 'place-shmnl'
-		},
-		{
-			name: 'Fields Corner',
-			position: new google.maps.LatLng(42.300093, -71.061667),
-			stop_id: 'place-fldcr'
-		},
-		{
-			name: 'Shawmut',
-			position: new google.maps.LatLng(42.29312583, -71.06573796000001),
-			stop_id: 'place-smmnl'
-		},
-		{
-			name: 'Ashmont',
-			position: new google.maps.LatLng(42.284652, -71.06448899999999),
-			stop_id: 'place-asmnl'
-		},
+		{name: 'Alewife', position: new google.maps.LatLng(42.395428, -71.142483), stop_id: 'place-alfcl'},
+		{name: 'Davis Square', position: new google.maps.LatLng(42.39674, -71.121815), stop_id: 'place-davis'},
+		{name: 'Porter Square', position: new google.maps.LatLng(42.3884, -71.11914899999999), stop_id: 'place-portr'},
+		{name: 'Harvard Square', position: new google.maps.LatLng(42.373362, -71.118956), stop_id: 'place-harsq'},
+		{name: 'Central Square', position: new google.maps.LatLng(42.365486, -71.103802), stop_id: 'place-cntsq'},
+		{name: 'Kendall/MIT', position: new google.maps.LatLng(42.36249079, -71.08617653), stop_id: 'place-knncl'},
+		{name: 'Charles/MGH', position: new google.maps.LatLng(42.361166, -71.070628), stop_id: 'place-chmnl'},
+		{name: 'Park Street', position: new google.maps.LatLng(42.35639457, -71.0624242), stop_id: 'place-pktrm'},
+		{name: 'Downtown Crossing', position: new google.maps.LatLng(42.355518, -71.060225), stop_id: 'place-dwnxg'},
+		{name: 'Broadway', position: new google.maps.LatLng(42.342622, -71.056967), stop_id: 'place-brdwy'},
+		{name: 'Andrew', position: new google.maps.LatLng(42.330154, -71.057655), stop_id: 'place-andrw'},
+		{name: 'JFK/UMass',position: new google.maps.LatLng(42.320685, -71.052391), stop_id: 'place-jfk'},
+		{name: 'North Quincy', position: new google.maps.LatLng(42.275275, -71.029583), stop_id: 'place-nqncy'},
+		{name: 'Wollaston', position: new google.maps.LatLng(42.2665139, -71.0203369), stop_id: 'place-wlsta'},
+		{name: 'Quincy Center', position: new google.maps.LatLng(42.251809, -71.005409), stop_id: 'place-qnctr'},
+		{name: 'Quincy Adams', position: new google.maps.LatLng(42.233391, -71.007153), stop_id: 'place-qamnl'},
+		{name: 'Braintree', position: new google.maps.LatLng(42.2078543, -71.0011385), stop_id: 'place-brntn'},
+		{name: 'Savin Hill', position: new google.maps.LatLng(42.31129, -71.053331), stop_id: 'place-shmnl'},
+		{name: 'Fields Corner', position: new google.maps.LatLng(42.300093, -71.061667), stop_id: 'place-fldcr'},
+		{name: 'Shawmut', position: new google.maps.LatLng(42.29312583, -71.06573796000001), stop_id: 'place-smmnl'},
+		{name: 'Ashmont', position: new google.maps.LatLng(42.284652, -71.06448899999999), stop_id: 'place-asmnl'},
 	];
-
 	drawMap();
 }
 
@@ -156,6 +71,7 @@ function drawMap() {
 	braintreePath.setMap(map);
 	ashmontPath.setMap(map);
 
+	// Calls function that finds user's location, draws polyline to closest station, and forms infowindow
 	getMyLocation(stations);
 }
 
@@ -263,6 +179,7 @@ function getMyLocation() {
 				strokeColor: '#000080'
 			});
 
+			// Create infowindow for user's current location which indicates closest station
 			infoWindowData = "You are closest to " + closestStation.name + " and it is " + smallestDistance + " miles away";
 
 			google.maps.event.addListener(userMarker, 'click', function() {
