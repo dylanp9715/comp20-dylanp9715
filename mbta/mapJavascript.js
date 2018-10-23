@@ -117,12 +117,14 @@ function createMarker(i) {
                         
                         // Go through JSON object and extract arrival times and direction to place inside infowindow
                         for (var i = 0; i < stationInfo["data"].length; i++) {
-                            arrivalTime += stationInfo["data"][i]["attributes"]["arrival_time"].slice(11,16) + "<br/>";
+                            if (stationInfo["data"][i]["attributes"]["arrival_time"] != null) {
+                                arrivalTime += stationInfo["data"][i]["attributes"]["arrival_time"].slice(11,16) + "<br/>";
 
-                            if (stationInfo["data"][i]["attributes"]["direction_id"] == 0) {
-                                direction += "Southbound" + "<br/>";
-                            } else {
-                                direction += "Northbound" + "<br/>";
+                                if (stationInfo["data"][i]["attributes"]["direction_id"] == 0) {
+                                    direction += "Southbound" + "<br/>";
+                                } else {
+                                    direction += "Northbound" + "<br/>";
+                                }
                             }
                         }
 
