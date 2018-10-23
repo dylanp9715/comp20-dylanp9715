@@ -1,11 +1,14 @@
 var map;
 
 function initMap() {
+	
+	// Create the map and center it on South Station
 	map = new google.maps.Map(document.getElementById('map'), {
 		center: {lat: 42.352271, lng: -71.05524200000001},
 		zoom:14
 	});
 
+	// Create an array of stations that contain its name, position, and stop id
 	var stations = [
 		{
 			name: 'Alewife',
@@ -118,6 +121,7 @@ function initMap() {
 }
 
 function drawMap(stations) {
+	
 	// Holds lat and lng coordinates of each station for the polyline
 	var braintreeArray = new Array();
 	var ashmontArray = new Array();
@@ -171,34 +175,44 @@ function drawMap(stations) {
 }
 
 function createMarker(stations, i) {
+	
+	// Create a marker for the current station with a custom icon
 	var stationMarker = new google.maps.Marker({
 		position: stations[i].position,
 		icon: 'tsymbol.png',
 		map: map
 	});
 
+	// Extract stop id and name of station to be used when inputting url for JSON retrieval and the infowindow respectively
 	var curr_stop_id = stations[i].stop_id;
 	var stationName = stations[i].name;
 
+	// Anytime the station marker is clicked...
 	google.maps.event.addListener(stationMarker, 'click', (function(curr_stop_id, stationName) {
 		return function() {
-			var url = "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + curr_stop_id;
 
+			// Make instance of XHR object to make HTTP request after page is loaded
 			request = new XMLHttpRequest();
-			request.open("GET", url, true);
-			console.log(url);
-			console.log(stationName);
+			
+			// Open the JSON file at remote location
+			request.open("GET", "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + curr_stop_id, true);
 
+			// Set up callback for when HTTP response is returned
 			request.onreadystatechange = (function(stationName) {
 				return function() {
 
+					// Create empty strings for infowindow data
 					var arrivalTime = " ";
 					var direction = " ";
 
 					if (request.readyState == 4 && request.status == 200) {
+						
+						// When we get JSON data back, parse it
 						theData = request.responseText;
 						stationInfo = JSON.parse(theData);
 						returnHTML = "This stop is: ";
+						
+						// Go through JSON object and extract arrival times and direction to place inside infowindow
 						for (var i = 0; i < stationInfo["data"].length; i++) {
 							arrivalTime += stationInfo["data"][i]["attributes"]["arrival_time"].slice(11,16) + "<br/>";
 							if (stationInfo["data"][i]["attributes"]["direction_id"] == 0) {
@@ -221,6 +235,7 @@ function createMarker(stations, i) {
 				}
 			})(stationName);
 			
+			// Send the request
 			request.send();
 		}
 	})(curr_stop_id, stationName));
