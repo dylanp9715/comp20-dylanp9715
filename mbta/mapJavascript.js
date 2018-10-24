@@ -129,7 +129,7 @@ function createMarker(i) {
                                     }
                                 } else {
                                     arrivalTime += "TBD" + "<br/>";
-                                    direction += " " + "<br/>"
+                                    direction += "TBD" + "<br/>"
                                 }
                             }
 
@@ -190,6 +190,9 @@ function getMyLocation() {
                 path: closestStationArray,
                 strokeColor: '#000080'
             });
+
+            // Rounds to four decimal places
+            smallestDistance = Math.round(smallestDistance * 10000) / 10000;
 
             // Create infowindow for user's current location marker which, when clicked upon, indicates closest station
             infoWindowData = "You are closest to " + closestStation.name + " and it is " + smallestDistance + " miles away";
