@@ -9,7 +9,7 @@ function initMap() {
         zoom:13
     });
 
-    // Initialize infoWindow so only one appears when clicking on marker
+    // Initialize infoWindow so only one appears at one time
     infoWindow = new google.maps.InfoWindow();
 
     // Create an array of stations that contain its name, position, and stop id
