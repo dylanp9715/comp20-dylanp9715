@@ -128,7 +128,8 @@ function createMarker(i) {
                                         direction += "Northbound" + "<br/>";
                                     }
                                 } else {
-                                    arrivalTime += "TBD";
+                                    arrivalTime += "TBD" + "<br/>";
+                                    direction += " " + "<br/>"
                                 }
                             }
 
