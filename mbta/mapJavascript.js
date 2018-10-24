@@ -6,7 +6,7 @@ function initMap() {
     // Create the map and center it on South Station
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 42.352271, lng: -71.05524200000001},
-        zoom:14
+        zoom:13
     });
 
     // Initialize infoWindow so only one appears when clicking on marker
@@ -127,6 +127,8 @@ function createMarker(i) {
                                     } else {
                                         direction += "Northbound" + "<br/>";
                                     }
+                                } else {
+                                    arrivalTime += "TBD";
                                 }
                             }
 
