@@ -8,7 +8,31 @@
     <link rel="stylesheet" href="style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
-        // Your work will be done here...
+        $(document).ready(function() {
+            $('#msg').keydown(function(e) {
+                if (e.keyCode == 13) {
+                    var userInput = $("#msg").val();
+
+                    var currentLogEntry = " " + "-" + " " + userInput;
+                    localStorage[new Date($.now())] = currentLogEntry;
+
+                    reload();
+                }
+            })
+
+            function reload() {
+                elem = document.getElementById("log");
+                output = "";
+                
+                for (var i = 0; i < localStorage.length; i++) {
+                    key = localStorage.key(i);
+                    value = localStorage.getItem(localStorage.key(i));
+                    output = output + "<p>" + key + value + "</p>\n";
+                }
+
+                elem.innerHTML = output;
+            }
+        })
     </script>
 </head>
 
