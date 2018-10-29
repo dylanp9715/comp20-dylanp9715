@@ -24,7 +24,7 @@
                 elem = document.getElementById("log");
                 output = "";
                 
-                for (var i = 0; i < localStorage.length; i++) {
+                for (var i = localStorage.length - 1; i >= 0; i--) {
                     key = localStorage.key(i);
                     value = localStorage.getItem(localStorage.key(i));
                     output = output + "<p>" + key + value + "</p>\n";
