@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<title>Security and Privacy Assessment of Assignment 3</title>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+	<h1>Assignment 4: Security and Privacy Assessment of Assignment 3</h1>
+	<ol>
+		<li class="bolded">Introduction</li>
+			<p>The product is a web application that submits and retrieves data regarding the top 10 players who have played the 2048 game on one's web server. Upon completion of the game, this application accepts user input for the username and stores this data along with the user's score and board placement in a database. The web application then allows for this data to be retrieved either through JSON or an HTML leaderboard. I was hired to look for any security vulnerabilities found within this code.</p>
+		
+		<li class="bolded">Methodology</li>
+			<p>I used the curl tool to mimic user input and enter data points such as username and score. This allowed me to make an HTTP POST request to one's web server. In addition, I appended query strings to the URL to gain access to information.</p>
+		
+		<li class="bolded">Abstract of Findings</li>
+			<p>
+				<ul>
+					<li>I was able to expose the application to malicious code, disguising it as a username and have it execute due to the fact that the application could not differentiate this entry from normal user input. Through this, I was able to not only have an alert appear, but also overload the database and prevent the application from opening.</li>
+					<li>I could retrieve all data on users stored in the database after disguising a nefarious data pulling statement as a simple request for information on a particular user.</li>
+				</ul>
+			</p>
+
+		<li class="bolded">Issues Found</li>
+			<p>
+			<table>
+				<tr>
+					<th>Issue</th>
+					<th>Location</th>
+					<th>Severity</th>
+					<th>Description</th>
+					<th>Proof of Vulnerability</th>
+				</tr>
+
+				<tr>
+					<td>Cross-Site Scripting</td>
+					<td>Found in the server.js file on lines 20-22. There is no line of code that strips out special characters allowing for script tags to be entered and executed. URL is https://gameserver2048.herokuapp.com/</td>
+					<td>High - If discovered, anyone can send in code that will completely alter the functionality of the site. The coder will no longer have any control over their site and will be at the mercy of the hacker's code.</td>
+					<td>Using curl, I set username in the query string to be a script tag that allowed for an alert saying "breached" to display. XSS could have also been done by entering the same Javascript code in the prompt used to collect the username upon completion of the game. Curl command: curl -i --data "username=&lt;script&gtalert('breached');&lt;script&gt&score=66666&grid={}" https://gameserver2048.herokuapp.com/submit;</td>
+					<td><img src="xss.png" alt="cross site scripting showing pop up box"></td>
+				</tr>
+
+				<tr>
+					<td>Injection Attack</td>
+					<td>Exists within the GET function for /scores.json in the server.js file. This code does not check for operators which makes the code vulnerable to injection attacks such as this. URL is https://gameserver2048.herokuapp.com/</td>
+					<td>Medium - If the data on this site were more valuable, then this would be a much more severe error. However, since the only data that can be pulled are people's usernames and high scores, this is not too severe.</td>
+					<td>Using the URL https://gameserver2048.herokuapp.com/scores.json?username[$ne]=bob, I was able to get all the data for the JSON documents that did not have the username bob (essentially getting all the data currently in the database). This feature should only allow me to access one particular user's information.</td>
+					<td><img src="injection.png" alt="injection attack showing all data in database"></td>
+				</tr>
+
+				<tr>
+					<td>Denial of Service Attack</td>
+					<td>Found in the server.js file on lines 20-22. There is no line of code that strips out special characters allowing for script tags to be entered and executed. URL is https://gameserver2048.herokuapp.com/</td>
+					<td>High - This hack would prevent any other user from being able to access the application.</td>
+					<td>Using curl, I had a for loop execute a console.log 100,000 times and overload the database. This completely prevented the application from opening and required the clearing of the database. Curl command: curl -i --data "username=&lt;script&gtfor%20(var%20i%20=%200;%20i%20<%20100000;%20i++){console.log('hacked');}&lt;/script&gt&score=66666&grid={}" https://gameserver2048.herokuapp.com/submit;</td>
+					<td><img src="ddos.png" alt="denial of service attack led to unresponsive webpage"></td>
+				</tr>
+
+				<tr>
+					<td>Bad Coding Practice</td>
+					<td>Found in the server.js file on lines 17 and 18.</td>
+					<td>Medium - This poor coding practice exposes the application to certain security risks like those listed above. However, if our client takes the necessary precautions, the risks are preventable.</td>
+					<td>After some research and reading class notes, I realized that CORS opens an application up to security breaches due to the nature of what it does. It gives anyone access to download all of the data from your application and send requests to your application with few restrictions</td>
+					<td><img src="cors.png" alt="lines of code that allow CORS"></td>
+				</tr>
+			</table>
+			</p>
+
+		<li class="bolded">Resolutions</li>
+			<p>
+				<ul>
+					<li>XSS and Denial of Service: Client needs to strip out all special characters. This will prevent the sending of any scripts. One can do this by adding the code: text = text.replace(/[^\w\s]/gi, '');</li>
+					<li>Injection Attacks: Client can either not allow for operators or loop through each record and check each username to make sure that they are not running any operators once they get the results back from the query.</li>
+					<li>Coding Practice: Client should be wary of allowing access to all origins because it gives anyone access to download all of the data from your application and send requests to your application with few restrictions. However, these are preventable if one follows the solutions above.</li>
+				</ul>
+			</p>
+
+		<li class="bolded">Conclusion</li>
+			<p>
+				I would recommend that our client implement the solutions above in a timely manner. Currently, the code is vulnerable to Cross-Site Scripting, Denial of Service, and Injection Attacks, all of which can irreparably damage their application, data, and reputation. We offer the option to hire our services and resolve all security issues for $500.00. 
+			</p>
+
+		<li class="bolded">References</li>
+			<p>
+				<ul>
+					<li>Notes from class</li>
+					<li>To style the table: https://www.w3schools.com/html/html_tables.asp</li>
+					<li>Searching how to prevent malicious curl requests: https://stackoverflow.com/questions/9391137/can-servers-block-curl-requests</li>
+					<li>Learning about the security risks of CORS: https://stackoverflow.com/questions/12001269/what-are-the-security-risks-of-setting-access-control-allow-origin</li>
+				</ul>
+			</p>
+	</ol>
+</body>
+
+</html>
